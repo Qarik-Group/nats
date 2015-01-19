@@ -33,6 +33,21 @@ func main(){
   app.Action = func(c *cli.Context) {
     cli.ShowAppHelp(c)
   }
+  app.Flags = []cli.Flag{
+      cli.StringFlag{
+        Name:   "s",
+        Value:  nats.DefaultURL,
+        Usage: "The nats server URLs (separated by comma)",
+      },
+      cli.BoolFlag{
+        Name:   "ssl",
+        Usage:  "Use Secure Connection",
+      },
+      cli.BoolFlag{
+        Name:   "t",
+        Usage:  "Display timestamps",
+      },
+  }
   app.Commands = []cli.Command{
     {
       Name:       "pub",
@@ -46,7 +61,7 @@ func main(){
         flag.Usage = usage
         flag.Parse()
 
-        args := flag.Args()
+        args := c.Args()
         if len(args) < 1 {
           usage()
         }
@@ -74,28 +89,27 @@ func main(){
     },
     {
       Name:       "sub",
-      ShortName:  "s",
       Usage:      subMessage,
       Action:  func(c *cli.Context){
-        var urls = flag.String("s", nats.DefaultURL, "The nats server URLs (separated by comma)")
-        var showTime = flag.Bool("t", false, "Display timestamps")
-        var ssl = flag.Bool("ssl", false, "Use Secure Connection")
+        var urls = c.String("s")
+        var showTime = c.Bool("t")
+        var ssl = c.Bool("ssl")
 
         log.SetFlags(0)
         flag.Usage = usage
         flag.Parse()
 
-        args := flag.Args()
+        args := c.Args()
         if len(args) < 1 {
           usage()
         }
 
         opts := nats.DefaultOptions
-        opts.Servers = strings.Split(*urls, ",")
+        opts.Servers = strings.Split(urls, ",")
         for i, s := range opts.Servers {
           opts.Servers[i] = strings.Trim(s, " ")
         }
-        opts.Secure = *ssl
+        opts.Secure = ssl
 
         nc, err := opts.Connect()
         if err != nil {
@@ -110,7 +124,7 @@ func main(){
           })
 
           log.Printf("Listening on [%s]\n", subj)
-          if *showTime {
+          if showTime {
             log.SetFlags(log.LstdFlags)
           }
 
