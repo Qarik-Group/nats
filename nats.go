@@ -47,7 +47,7 @@ func main(){
 
         args := c.Args()
         if len(args) < 1 {
-          usage()
+          cli.ShowAppHelp(c)
         }
 
         opts := nats.DefaultOptions
@@ -73,6 +73,7 @@ func main(){
     },
     {
       Name:       "sub",
+      ShortName:  "s",
       Usage:      subMessage,
       Flags:  []cli.Flag{
           cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma)"},
@@ -86,7 +87,7 @@ func main(){
 
         args := c.Args()
         if len(args) < 1 {
-          usage()
+          cli.ShowAppHelp(c)
         }
 
         opts := nats.DefaultOptions
