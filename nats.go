@@ -11,7 +11,9 @@ import(
   "github.com/codegangsta/cli"
   )
 
-  var message = "Usage: nats sub/nats pub [-s Server] [--ssl] [-t] <subject>"
+  var message = "Usage: nats sub or nats pub"
+  var subMessage = "Usage: nats sub [-s server] [--ssl] [-t] <subject> \n"
+  var pubMessage = "Usage: nats pub [-s server] [--ssl] [-t] <subject> <msg> \n"
   var index = 0
 
 func usage() {
@@ -27,14 +29,15 @@ func main(){
   app := cli.NewApp()
   app.Name = "nats"
   app.Usage = "Nats Pub and Sub - Go Client"
-  app.Action = func(C *cli.Context) {
-    println(message)
+  app.Version = "1.0"
+  app.Action = func(c *cli.Context) {
+    cli.ShowAppHelp(c)
   }
   app.Commands = []cli.Command{
     {
       Name:       "pub",
       ShortName:  "p",
-      Usage:      message,
+      Usage:      pubMessage,
       Action: func(c *cli.Context){
         var urls = flag.String("s", nats.DefaultURL, "The nats server URLs (separated by comma)")
         var ssl = flag.Bool("ssl", false, "Use Secure Connection")
@@ -71,8 +74,8 @@ func main(){
     },
     {
       Name:       "sub",
-      ShortName:  "c",
-      Usage:      message,
+      ShortName:  "s",
+      Usage:      subMessage,
       Action:  func(c *cli.Context){
         var urls = flag.String("s", nats.DefaultURL, "The nats server URLs (separated by comma)")
         var showTime = flag.Bool("t", false, "Display timestamps")
