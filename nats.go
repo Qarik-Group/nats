@@ -48,6 +48,7 @@ func main(){
         args := c.Args()
         if len(args) < 1 {
           cli.ShowAppHelp(c)
+          os.Exit(1)
         }
 
         opts := nats.DefaultOptions
@@ -88,6 +89,7 @@ func main(){
         args := c.Args()
         if len(args) < 1 {
           cli.ShowAppHelp(c)
+          os.Exit(1)
         }
 
         opts := nats.DefaultOptions
