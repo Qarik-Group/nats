@@ -8,7 +8,7 @@ go get github.com/soutenniza/nats
 
 Usage
 ```
-  nats pub [-s server] [--ssl] [-t] <subject> <msg> 
+  nats pub [-s server] [--ssl]  <subject> <msg> 
       or
-  nats sub [-s server] [--ssl] [-t] <subject> 
+  nats sub [-s server] [--ssl] [-t] [-r] <subject> 
 ```
