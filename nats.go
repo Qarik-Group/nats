@@ -3,6 +3,7 @@ package main
 import(
   "os"
   "log"
+  "fmt"
   "strings"
   "runtime"
 
@@ -21,7 +22,16 @@ func usage() {
 
 func printMsg(m *nats.Msg, i int){
   index += 1
+  fmt.Printf("[#%d] Received on [%s]: '%s'\n", i, m.Subject, string(m.Data))
+}
+
+func printTimeMsg(m *nats.Msg, i int){
+  index += 1
   log.Printf("[#%d] Received on [%s]: '%s'\n", i, m.Subject, string(m.Data))
+}
+
+func printRaw(m *nats.Msg){
+  fmt.Printf("%s\n", string(m.Data))
 }
 
 func main(){
@@ -69,7 +79,7 @@ func main(){
         nc.Publish(subj, msg)
         nc.Close()
 
-        log.Printf("Published [%s] : '%s'\n", subj, msg)
+        fmt.Printf("Published [%s] : '%s'\n", subj, msg)
       },
     },
     {
@@ -80,11 +90,13 @@ func main(){
           cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma)"},
           cli.BoolFlag{Name:   "ssl", Usage:  "Use Secure Connection"},
           cli.BoolFlag{Name:   "t",Usage:  "Display timestamps"},
+          cli.BoolFlag{Name:   "r",Usage:  "Display raw output"},
         },
       Action:  func(c *cli.Context){
         var urls = c.String("s")
-        var showTime = c.Bool("t")
         var ssl = c.Bool("ssl")
+        var showtime = c.Bool("t")
+        var rawoutput = c.Bool("r")
 
         args := c.Args()
         if len(args) < 1 {
@@ -106,17 +118,24 @@ func main(){
 
         subj, i := args[0], 0
 
-        nc.Subscribe(subj, func(msg *nats.Msg) {
-          i += 1
-          printMsg(msg, i)
-          })
+        if(rawoutput){
+          nc.Subscribe(subj, func(msg *nats.Msg) {
+            printRaw(msg)
+            })
 
-          log.Printf("Listening on [%s]\n", subj)
-          if showTime {
-            log.SetFlags(log.LstdFlags)
-          }
+        }else{
+          nc.Subscribe(subj, func(msg *nats.Msg) {
+            i += 1
+            if(showtime){
+              printTimeMsg(msg, i)
+            }else{
+              printMsg(msg, i)
+            }
+            })
 
-          runtime.Goexit()
+          fmt.Printf("Listening on [%s]\n", subj)
+        }
+        runtime.Goexit()
       },
     },
   }
