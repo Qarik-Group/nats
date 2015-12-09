@@ -12,8 +12,8 @@ import(
   )
 
   var message = "Usage: nats sub or nats pub"
-  var subMessage = "Usage: nats sub [-s server] [--ssl] [-t] <subject> \n"
-  var pubMessage = "Usage: nats pub [-s server] [--ssl] [-t] <subject> <msg> \n"
+  var subMessage = "Usage: nats sub [-s server url] [--ssl] [-t] <subject> \n"
+  var pubMessage = "Usage: nats pub [-s server url] [--ssl] [-t] <subject> <msg> \n"
   var index = 0
 
 func usage() {
@@ -38,7 +38,7 @@ func main(){
   app := cli.NewApp()
   app.Name = "nats"
   app.Usage = "Nats Pub and Sub - Go Client"
-  app.Version = "1.0"
+  app.Version = "1.0.2"
   app.Action = func(c *cli.Context) {
     cli.ShowAppHelp(c)
   }
@@ -48,7 +48,7 @@ func main(){
       ShortName:  "p",
       Usage:      pubMessage,
       Flags:  []cli.Flag{
-        cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma)"},
+        cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma).\n\tServer Url must be in following format: nats://nats_user:nats_password@host:port or nats://host:port"},
         cli.BoolFlag{Name:   "ssl", Usage:  "Use Secure Connection"},
         },
       Action: func(c *cli.Context){
@@ -87,7 +87,7 @@ func main(){
       ShortName:  "s",
       Usage:      subMessage,
       Flags:  []cli.Flag{
-          cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma)"},
+          cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma).\n\tServer Url must be in following format: nats://nats_user:nats_password@host:port or nats://host:port"},
           cli.BoolFlag{Name:   "ssl", Usage:  "Use Secure Connection"},
           cli.BoolFlag{Name:   "t",Usage:  "Display timestamps"},
           cli.BoolFlag{Name:   "r",Usage:  "Display raw output"},
