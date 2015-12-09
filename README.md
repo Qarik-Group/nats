@@ -1,7 +1,7 @@
 # nats cli
 Go Application that combines nats sub and pub
 
-Download
+#Download
 ```
 go get github.com/soutenniza/nats
 ```
