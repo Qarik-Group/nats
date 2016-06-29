@@ -154,7 +154,7 @@ func main(){
       Action: func(c *cli.Context){
         var urls = c.String("s")
         var ssl = c.Bool("ssl")
-        var timeout = c.Duration("timeout")
+        var timeout = c.Duration("w")
         var showtime = c.Bool("t")
         var rawoutput = c.Bool("r")
 
