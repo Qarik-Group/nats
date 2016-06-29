@@ -15,7 +15,7 @@ import(
   var message = "Usage: nats sub or nats pub"
   var subMessage = "Usage: nats sub [-s server url] [--ssl] [-t] <subject> \n"
   var pubMessage = "Usage: nats pub [-s server url] [--ssl] [-t] <subject> <msg> \n"
-  var reqMessage = "Usage: nats req [-s server url] [--ssl] [-t] <subject> <msg> \n"
+  var reqMessage = "Usage: nats req [-s server url] [--ssl] [-t] [-w] <subject> <msg> \n"
   var index = 0
 
 func usage() {
@@ -45,50 +45,6 @@ func main(){
     cli.ShowAppHelp(c)
   }
   app.Commands = []cli.Command{
-    {
-      Name:       "req",
-      ShortName:  "r",
-      Usage:      reqMessage,
-      Flags:  []cli.Flag{
-        cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma).\n\tServer Url must be in following format: nats://nats_user:nats_password@host:port or nats://host:port"},
-        cli.BoolFlag{Name:   "ssl", Usage:  "Use Secure Connection"},
-        cli.DurationFlag{Name: "timeout", Value: 2 * time.Second, Usage: "Duration to wait for response, eg '1s'"},
-      },
-      Action: func(c *cli.Context){
-        var urls = c.String("s")
-        var ssl = c.Bool("ssl")
-        var timeout = c.Duration("timeout")
-
-        args := c.Args()
-        if len(args) < 1 {
-          cli.ShowAppHelp(c)
-          os.Exit(1)
-        }
-
-        opts := nats.DefaultOptions
-        opts.Servers = strings.Split(urls, ",")
-        for i, s := range opts.Servers {
-          opts.Servers[i] = strings.Trim(s, " ")
-        }
-
-        opts.Secure = ssl
-
-        nc, err := opts.Connect()
-        if err != nil {
-          log.Fatalf("Can't connect: %v\n", err)
-        }
-
-        subj, msg := args[0], []byte(args[1])
-
-        resp, err := nc.Request(subj, msg, timeout)
-        if err != nil {
-          log.Fatal("Error during request:", err)
-        }
-        fmt.Printf("Published [%s] : '%s'\n", subj, msg)
-        printMsg(resp, 1)
-        nc.Close()
-      },
-    },
     {
       Name:       "pub",
       ShortName:  "p",
@@ -182,6 +138,64 @@ func main(){
           fmt.Printf("Listening on [%s]\n", subj)
         }
         runtime.Goexit()
+      },
+    },
+    {
+      Name:       "req",
+      ShortName:  "r",
+      Usage:      reqMessage,
+      Flags:  []cli.Flag{
+        cli.StringFlag{Name:   "s", Value:  nats.DefaultURL, Usage: "The nats server URLs (separated by comma).\n\tServer Url must be in following format: nats://nats_user:nats_password@host:port or nats://host:port"},
+        cli.BoolFlag{Name:   "ssl", Usage:  "Use Secure Connection"},
+        cli.DurationFlag{Name: "w", Value: 2 * time.Second, Usage: "Duration to wait for response, eg '1s'"},
+        cli.BoolFlag{Name:   "t",Usage:  "Display timestamps"},
+        cli.BoolFlag{Name:   "r",Usage:  "Display raw output"},
+      },
+      Action: func(c *cli.Context){
+        var urls = c.String("s")
+        var ssl = c.Bool("ssl")
+        var timeout = c.Duration("timeout")
+        var showtime = c.Bool("t")
+        var rawoutput = c.Bool("r")
+
+        args := c.Args()
+        if len(args) < 1 {
+          cli.ShowAppHelp(c)
+          os.Exit(1)
+        }
+
+        opts := nats.DefaultOptions
+        opts.Servers = strings.Split(urls, ",")
+        for i, s := range opts.Servers {
+          opts.Servers[i] = strings.Trim(s, " ")
+        }
+
+        opts.Secure = ssl
+
+        nc, err := opts.Connect()
+        if err != nil {
+          log.Fatalf("Can't connect: %v\n", err)
+        }
+
+        subj, msg := args[0], []byte(args[1])
+
+        resp, err := nc.Request(subj, msg, timeout)
+        if err != nil {
+          log.Fatal("Error during request:", err)
+        }
+        fmt.Printf("Published [%s] : '%s'\n", subj, msg)
+
+        if(rawoutput){
+          printRaw(resp)
+        }else{
+          if(showtime){
+            printTimeMsg(resp, 1)
+          }else{
+            printMsg(resp, 1)
+          }
+        }
+
+        nc.Close()
       },
     },
   }
