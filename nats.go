@@ -41,8 +41,9 @@ func main(){
   app.Name = "nats"
   app.Usage = "Nats Pub and Sub - Go Client"
   app.Version = "1.0.2"
-  app.Action = func(c *cli.Context) {
+  app.Action = func(c *cli.Context) error {
     cli.ShowAppHelp(c)
+    return nil
   }
   app.Commands = []cli.Command{
     {
