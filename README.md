@@ -1,12 +1,12 @@
 # nats cli
 Go Application that combines nats sub and pub
 
-#Download
+# Download
 ```
 go get github.com/starkandwayne/nats
 ```
 
-#Actions
+# Actions
 
 ## Pub 
 Publish a message on a subject
@@ -18,7 +18,7 @@ Subscribe to a subject and await messages
 Publish a message and await reply
 
 
-#Usage
+# Usage
 ```
   nats pub [-s server] [--ssl]  <subject> <msg> 
       or
