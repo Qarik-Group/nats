@@ -1,0 +1,37 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "GfZvfJZHPiNFI2KTFF9HfNNAMuA=",
+			"path": "github.com/codegangsta/cli",
+			"revision": "8ba6f23b6e36d03666a14bd9421f5e3efcb59aca",
+			"revisionTime": "2017-03-29T01:35:17Z"
+		},
+		{
+			"checksumSHA1": "Q2c9uTEIGhSIddv5pntYdFNtUdk=",
+			"path": "github.com/nats-io/go-nats/encoders/builtin",
+			"revision": "399fe00b07f048bdacbdbfdfeda39712642e6a11",
+			"revisionTime": "2017-03-07T17:17:48Z"
+		},
+		{
+			"checksumSHA1": "LhbIA/oMWpscEPPK9Wrx5GLcz44=",
+			"path": "github.com/nats-io/go-nats/util",
+			"revision": "399fe00b07f048bdacbdbfdfeda39712642e6a11",
+			"revisionTime": "2017-03-07T17:17:48Z"
+		},
+		{
+			"checksumSHA1": "pX5wQKeHPnSMOwI4GAKTmzncav4=",
+			"path": "github.com/nats-io/nats",
+			"revision": "399fe00b07f048bdacbdbfdfeda39712642e6a11",
+			"revisionTime": "2017-03-07T17:17:48Z"
+		},
+		{
+			"checksumSHA1": "qI+4s7mlYYbB7ppay+Z3Y7+mhik=",
+			"path": "github.com/nats-io/nuid",
+			"revision": "3cf34f9fca4e88afa9da8eabd75e3326c9941b44",
+			"revisionTime": "2017-03-03T15:02:24Z"
+		}
+	],
+	"rootPath": "github.com/starkandwayne/nats"
+}
