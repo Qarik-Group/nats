@@ -1,22 +1,35 @@
 ---
 meta:
   name:    nats
-  release: nats
-  target:  sw
-  url:     https://ci.starkandwayne.com
+  target:  ohio-cf
+  url:     https://ci-ohio.starkandwayne.com
 
-  initial_version: 1.1.0
+  initial_version: 1.0.0
+
+  go:
+    version: "1.9"
+    binary: nats
+    cmd_module: .
+
+  git:
+    email:  ((git-commit-email))
+    name:   ((git-commit-name))
 
   aws:
-    access_key: (( vault "secret/aws/cfcommunity:access" ))
-    secret_key: (( vault "secret/aws/cfcommunity:secret" ))
+    bucket:      (( grab meta.pipeline ))
+    region_name: us-east-1
+    access_key:  ((aws-cfcommunity-access))
+    secret_key:  ((aws-cfcommunity-secret))
 
   github:
     owner:  starkandwayne
     repo:   nats
-    private_key:  (( vault "secret/pipelines/shared/github:private_key" ))
-    access_token: (( vault "secret/pipelines/shared/github:access_token" ))
+    branch: master
+    private_key:  ((github-private-key))
+    access_token: ((github-access-token))
 
   slack:
-    webhook: unknown
-    channel: '#vault'
+    webhook:       ((slack-webhook))
+    username:      ((slack-username))
+    icon:          ((slack-icon-url))
+    channel:       "#nats"
